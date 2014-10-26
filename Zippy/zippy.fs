@@ -4,14 +4,13 @@ open FSharpx.Collections
 open FSharpx.Collections.LazyList
 
 module Zippers =
-    let ($) f x = f x
-    
     let repeat value =
-        let rec repeat' v = seq {
+        let rec loop v = seq {
             yield v
-            yield! repeat' v
+            yield! loop v
         }
-        LazyList.ofSeq $ repeat' value
+        loop value
+        |> LazyList.ofSeq
 
     let rec (<<) (f: ('a -> 'b) LazyList) (a: 'a LazyList): 'b LazyList =
         match (f, a) with
